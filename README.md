@@ -32,7 +32,7 @@ Sistema web de gestión de citas para consultorio psicológico, desarrollado con
 ### 1 — Clonar o descomprimir el proyecto
 
 ```bash
-git clone https://github.com/tu-usuario/psicoagenda.git
+git clone https://github.com/Squarterder/PsicoAgenda---SanaMenteCol.git
 cd psicoagenda
 ```
 
@@ -117,26 +117,25 @@ Para activar las notificaciones por correo necesitas una **contraseña de aplica
 ```
 psicoagenda/
 │
-├── manage.py                         Comando principal de Django
-├── requirements.txt                  Dependencias del proyecto
-├── .env.example                      Plantilla de variables de entorno
+├── manage.py
+├── requirements.txt
 ├── db.sqlite3                        Base de datos (se genera con migrate)
 │
 ├── psicoagenda/
-│   ├── settings.py                   Configuración general
-│   ├── urls.py                       URLs raíz
-│   └── wsgi.py                       Punto de entrada para despliegue
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
 │
-├── citas/                            Aplicación principal
-│   ├── models.py                     Modelos: Usuario, Cita, HorarioDisponible, SeguimientoClinico
-│   ├── views.py                      Lógica de negocio y endpoints JSON
-│   ├── urls.py                       Rutas de la aplicación
-│   ├── forms.py                      Formularios con validación en servidor
-│   ├── admin.py                      Configuración del admin de Django
+├── citas/
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── forms.py
+│   ├── admin.py
 │   └── management/commands/
-│       └── crear_datos_iniciales.py  Crea los 3 usuarios de prueba
+│       └── crear_datos_iniciales.py
 │
-├── templates/                        Plantillas HTML
+├── templates/
 │   ├── base.html
 │   ├── index.html
 │   ├── login.html
@@ -149,8 +148,8 @@ psicoagenda/
 │   └── dashboard_paciente.html
 │
 └── static/
-    ├── estilos.css                   Todos los estilos (sin Bootstrap)
-    ├── aplicacion.js                 Toda la lógica JS (sin jQuery)
+    ├── estilos.css
+    ├── aplicacion.js
     ├── psicologa.jpg
     └── consultorio.jpg
 ```
