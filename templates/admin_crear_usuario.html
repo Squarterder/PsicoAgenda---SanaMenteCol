@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}{{ accion }} Usuario{% endblock %}
+
+
+{% block contenido %}
+<!-- layout -->
+<div class="app-layout">
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <!-- logo -->
+    <div class="sidebar-logo">SanaMente<span>Col</span><div class="sidebar-rol">Administrador</div></div>
+    <!-- navegación -->
+    <nav class="sidebar-nav">
+      <a href="{% url 'panel_admin' %}">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        </svg>
+        Gestion de usuarios
+      </a>
+    </nav>
+    <!-- cerrar sesión -->
+    <div class="sidebar-salir">
+      <a href="{% url 'logout' %}">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesion
+      </a>
+    </div>
+  </aside>
+
+  <!-- contenido principal -->
+  <main class="main-content">
+    <!-- encabezado de página -->
+    <div class="page-header">
+      <h1>{{ accion }} Usuario</h1>
+    </div>
+
+    <!-- formulario -->
+    <div class="form-card">
+      {% if accion == 'Editar' and usuario_editado %}
+      <p style="font-size:.85rem; color:var(--texto-medio); margin-bottom:1.5rem;">
+        Editando: <strong>{{ usuario_editado.nombre_completo }}</strong>
+        (usuario: <code style="font-size:.82rem;">{{ usuario_editado.username }}</code>)
+      </p>
+      {% endif %}
+
+      <form method="POST">
+        {% csrf_token %}
+
+        {% if formulario.non_field_errors %}
+        <div style="background:rgba(107,30,46,.08);border-left:3px solid var(--vino);padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.85rem;color:var(--vino);border-radius:2px;">
+          {% for error in formulario.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- nombre y apellidos -->
+
+        <div class="fila-campos">
+          <div class="grupo-campo">
+            <label>Nombres*</label>
+            <input type="text" name="nombre" value="{{ formulario.nombre.value|default:'' }}" placeholder="Nombre" required>
+            {% if formulario.nombre.errors %}<div class="error">{{ formulario.nombre.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="grupo-campo">
+            <label>Apellidos*</label>
+            <input type="text" name="apellidos" value="{{ formulario.apellidos.value|default:'' }}" placeholder="Apellidos" required>
+            {% if formulario.apellidos.errors %}<div class="error">{{ formulario.apellidos.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label>Correo electronico*</label>
+          <input type="email" name="correo" value="{{ formulario.correo.value|default:'' }}" placeholder="correo@ejemplo.com" required>
+          {% if formulario.correo.errors %}<div class="error">{{ formulario.correo.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="grupo-campo">
+          <label>Celular*</label>
+          <input type="tel" name="celular" value="{{ formulario.celular.value|default:'' }}" placeholder="Ej: 3001234567">
+        </div>
+
+        {% if accion == 'Crear' %}
+        <div class="grupo-campo">
+          <label>Usuario*</label>
+          <input type="text" name="username" value="{{ formulario.username.value|default:'' }}" placeholder="Ej: juan123 (sin espacios)" required>
+          {% if formulario.username.errors %}<div class="error">{{ formulario.username.errors.0 }}</div>{% endif %}
+        </div>
+        {% endif %}
+
+        <div class="grupo-campo">
+          <label>Rol*</label>
+          <select name="rol" required>
+            {% for valor, etiqueta in formulario.fields.rol.choices %}
+            <option value="{{ valor }}" {% if formulario.rol.value == valor %}selected{% endif %}>{{ etiqueta }}</option>
+            {% endfor %}
+          </select>
+          {% if formulario.rol.errors %}<div class="error">{{ formulario.rol.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="grupo-campo">
+          <label>{% if accion == 'Crear' %}Contraseña*{% else %}Nueva contraseña (dejar en blanco para no cambiar){% endif %}</label>
+          <input type="password" name="{% if accion == 'Crear' %}contrasena{% else %}contrasena_nueva{% endif %}"
+            placeholder="{% if accion == 'Crear' %}Minimo 6 caracteres{% else %}Dejar en blanco para no cambiar{% endif %}"
+            {% if accion == 'Crear' %}required{% endif %}>
+        </div>
+
+        {% if accion == 'Editar' %}
+        <div class="checkbox-fila">
+          <input type="checkbox" id="habilitado" name="habilitado" {% if formulario.habilitado.value %}checked{% endif %}>
+          <label for="habilitado">Cuenta habilitada</label>
+        </div>
+        {% endif %}
+
+        <!-- botones -->
+
+        <div class="botones-form">
+          <button type="submit" class="btn-guardar">Guardar</button>
+          <a href="{% url 'panel_admin' %}" class="btn-cancelar">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}

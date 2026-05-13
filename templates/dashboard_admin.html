@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Panel Administrador{% endblock %}
+
+
+{% block contenido %}
+<!-- layout -->
+<div class="app-layout">
+
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <!-- logo -->
+    <div class="sidebar-logo">
+      SanaMente<span>Col</span>
+      <div class="sidebar-rol">Administrador</div>
+    </div>
+    <!-- navegación -->
+    <nav class="sidebar-nav">
+      <a href="{% url 'panel_admin' %}" class="activo">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Gestion de usuarios
+      </a>
+    </nav>
+    <!-- cerrar sesión -->
+    <div class="sidebar-salir">
+      <a href="{% url 'logout' %}">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesion
+      </a>
+      <div style="margin-top:.6rem; font-size:.75rem; color:rgba(245,239,230,.4);">
+        {{ request.user.nombre }} {{ request.user.apellidos }}
+      </div>
+    </div>
+  </aside>
+
+  <!-- contenido principal -->
+  <main class="main-content">
+    <!-- encabezado de página -->
+    <div class="page-header">
+      <h1>Gestion de Usuarios</h1>
+      <p>Administra todas las cuentas del sistema — psicologos, pacientes y administradores.</p>
+    </div>
+
+    <!-- tarjetas de estadísticas -->
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num">{{ total_admin }}</div>
+        <div class="lbl">Administradores</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">{{ total_psicologo }}</div>
+        <div class="lbl">Psicologos</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">{{ total_paciente }}</div>
+        <div class="lbl">Pacientes</div>
+      </div>
+    </div>
+
+    <!-- barra de herramientas -->
+
+    <div class="toolbar">
+      <form method="GET" class="filtros-form">
+        <input type="text" name="q" placeholder="Buscar por nombre o correo..." value="{{ filtro_busqueda }}">
+        <select name="rol">
+          <option value="">Todos los roles</option>
+          <option value="admin" {% if filtro_rol == 'admin' %}selected{% endif %}>Administrador</option>
+          <option value="psicologo" {% if filtro_rol == 'psicologo' %}selected{% endif %}>Psicologo</option>
+          <option value="paciente" {% if filtro_rol == 'paciente' %}selected{% endif %}>Paciente</option>
+        </select>
+        <button type="submit" class="btn-filtrar">Filtrar</button>
+        {% if filtro_rol or filtro_busqueda %}
+        <a href="{% url 'panel_admin' %}" class="btn-filtrar" style="text-decoration:none;">Limpiar</a>
+        {% endif %}
+      </form>
+      <a href="{% url 'crear_usuario' %}" class="btn-crear">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nuevo usuario
+      </a>
+    </div>
+
+    <!-- tabla de usuarios -->
+    <table class="tabla-usuarios">
+      <thead>
+        <tr>
+          <th>Nombre completo</th>
+          <th>Usuario</th>
+          <th>Correo</th>
+          <th>Celular</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in usuarios %}
+        <tr>
+          <td>{{ u.nombre }} {{ u.apellidos }}</td>
+          <td style="font-size:.82rem; color:var(--texto-medio);">{{ u.username }}</td>
+          <td style="font-size:.82rem;">{{ u.correo }}</td>
+          <td style="font-size:.82rem;">{{ u.celular|default:'-' }}</td>
+          <td>
+            <span class="badge badge-{{ u.rol }}">{{ u.get_rol_display }}</span>
+          </td>
+          <td>
+            <!-- switch habilitar / deshabilitar -->
+            <form method="POST" action="{% url 'toggle_usuario' u.pk %}" class="form-switch-toggle">
+              {% csrf_token %}
+              <label class="switch-toggle" title="{% if u.habilitado %}Deshabilitar{% else %}Habilitar{% endif %}">
+                <input type="checkbox" {% if u.habilitado %}checked{% endif %}
+                  onchange="if(!this.checked && !confirm('¿Deshabilitar a {{ u.nombre }}?')){this.checked=true;return;} this.closest('form').submit();"
+                  {% if not u.habilitado %}onchange="this.closest('form').submit();"{% endif %}>
+                <span class="switch-slider"></span>
+              </label>
+              <span class="switch-label {% if u.habilitado %}activo{% else %}inactivo{% endif %}">
+                {% if u.habilitado %}Activo{% else %}Inactivo{% endif %}
+              </span>
+            </form>
+          </td>
+          <td>
+            <div class="acciones-fila">
+              <a href="{% url 'editar_usuario' u.pk %}" class="btn-accion btn-editar">Editar</a>
+              <form method="POST" action="{% url 'eliminar_usuario' u.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-accion btn-eliminar"
+                  onclick="return confirm('Eliminar a {{ u.nombre }} {{ u.apellidos }}? Esta accion no se puede deshacer.')">
+                  Eliminar
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="tabla-vacia">No se encontraron usuarios con esos filtros.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Panel Psicologo{% endblock %}
+
+
+{% block contenido %}
+<!-- layout -->
+<div class="app-layout">
+
+  <!-- Barra lateral -->
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <!-- logo -->
+    <div class="sidebar-logo">
+      SanaMente<span>Col</span>
+      <div class="sidebar-rol">Psicologo</div>
+    </div>
+    <!-- navegación -->
+    <nav class="sidebar-nav">
+      <a href="{% url 'dashboard_psicologo' %}" class="activo">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Mi agenda
+        {% if citas_pendientes.count > 0 %}
+        <span class="sidebar-badge">{{ citas_pendientes.count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'lista_pacientes_psicologo' %}">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Mis pacientes
+        {% if total_pacientes > 0 %}
+        <span class="sidebar-badge">{{ total_pacientes }}</span>
+        {% endif %}
+      </a>
+    </nav>
+    <!-- cerrar sesión -->
+    <div class="sidebar-salir">
+      <a href="{% url 'logout' %}">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesion
+      </a>
+      <div class="sidebar-usuario">{{ request.user.nombre }} {{ request.user.apellidos }}</div>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <!-- contenido principal -->
+  <main class="main-content">
+
+    <!-- encabezado de página -->
+    <div class="page-header">
+      <h1>Mi Agenda</h1>
+      <p>Configura tus horarios disponibles y gestiona las citas de tus pacientes.</p>
+    </div>
+
+    <!-- Estadisticas rapidas -->
+    <!-- estadísticas rápidas -->
+
+    <div class="stats-mini">
+      <div class="stat-mini">
+        <div class="num">{{ citas_pendientes.count }}</div>
+        <div class="lbl">Pendientes</div>
+      </div>
+      <div class="stat-mini">
+        <div class="num">{{ citas_confirmadas.count }}</div>
+        <div class="lbl">Confirmadas</div>
+      </div>
+      <div class="stat-mini">
+        <div class="num">{{ total_pacientes }}</div>
+        <div class="lbl">Pacientes</div>
+      </div>
+    </div>
+
+    <!-- Leyenda -->
+    <!-- leyenda del calendario + botón horario semanal -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:.2rem;">
+    <div class="leyenda" style="margin-bottom:0;">
+      <div class="leyenda-item">
+        <span class="leyenda-cuadro" style="background:rgba(107,30,46,.13);border:1px solid var(--vino-claro);"></span>
+        Con horarios configurados
+      </div>
+      <div class="leyenda-item">
+        <span class="leyenda-cuadro" style="background:rgba(107,30,46,.05);border:1px solid rgba(107,30,46,.07);"></span>
+        Dia pasado (no disponible)
+      </div>
+      <div class="leyenda-item">
+        <span class="leyenda-cuadro" style="border:2px solid var(--dorado);"></span>
+        Hoy
+      </div>
+    </div>
+      <button class="btn-crear" onclick="abrirModalSemanal()" style="white-space:nowrap;flex-shrink:0;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Horario semanal
+      </button>
+    </div>
+
+    <!-- modal horario semanal -->
+    <div class="modal-overlay" id="modal-semanal">
+      <div class="modal-semanal">
+        <div class="modal-titulo">Horario semanal recurrente</div>
+        <div class="modal-subtitulo">Crea horarios para los días seleccionados en todo el mes de una vez.</div>
+
+        <div class="msg-modal msg-ok" id="msg-semanal"></div>
+
+        <!-- selección de mes -->
+        <div class="semanal-seccion">
+          <label class="lbl-campo">Mes</label>
+          <div class="mes-opciones">
+            <input class="mes-opcion" type="radio" name="mes-semanal" id="mes-actual" value="actual" checked>
+            <label class="mes-opcion-label" for="mes-actual">Mes actual</label>
+            <input class="mes-opcion" type="radio" name="mes-semanal" id="mes-siguiente" value="siguiente">
+            <label class="mes-opcion-label" for="mes-siguiente">Mes siguiente</label>
+          </div>
+        </div>
+
+        <!-- selección de días -->
+        <div class="semanal-seccion">
+          <label class="lbl-campo">Días de la semana</label>
+          <div class="dias-grid">
+            <input class="dia-check" type="checkbox" id="dia-0" value="0"><label class="dia-label" for="dia-0">Lun</label>
+            <input class="dia-check" type="checkbox" id="dia-1" value="1"><label class="dia-label" for="dia-1">Mar</label>
+            <input class="dia-check" type="checkbox" id="dia-2" value="2"><label class="dia-label" for="dia-2">Mié</label>
+            <input class="dia-check" type="checkbox" id="dia-3" value="3"><label class="dia-label" for="dia-3">Jue</label>
+            <input class="dia-check" type="checkbox" id="dia-4" value="4"><label class="dia-label" for="dia-4">Vie</label>
+            <input class="dia-check" type="checkbox" id="dia-5" value="5"><label class="dia-label" for="dia-5">Sáb</label>
+            <input class="dia-check" type="checkbox" id="dia-6" value="6"><label class="dia-label" for="dia-6">Dom</label>
+          </div>
+        </div>
+
+        <!-- horas -->
+        <div class="semanal-seccion">
+          <div class="horas-fila">
+            <div class="campo-hora">
+              <label class="lbl-campo" for="sem-inicio">Hora inicio</label>
+              <input type="time" id="sem-inicio" value="08:00">
+            </div>
+            <div class="campo-hora">
+              <label class="lbl-campo" for="sem-fin">Hora fin</label>
+              <input type="time" id="sem-fin" value="10:00">
+            </div>
+          </div>
+        </div>
+
+        <div class="botones-semanal">
+          <button class="btn-aplicar-semanal" onclick="aplicarHorarioSemanal()">Aplicar al mes</button>
+          <button class="btn-cerrar-semanal" onclick="cerrarModalSemanal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendarios de los 2 meses -->
+    <!-- calendarios -->
+
+    <div class="calendarios-fila">
+      {% for cal in calendarios %}
+      <div class="calendario-card">
+        <div class="cal-mes-titulo">{{ cal.nombre_mes }} {{ cal.anio }}</div>
+        <div class="cal-grid">
+          {% for d in dias_semana %}
+          <div class="cal-header-dia">{{ d }}</div>
+          {% endfor %}
+
+          {% for dia in cal.dias %}
+          {% if dia == None %}
+          <div class="cal-dia vacio"></div>
+          {% else %}
+          <div class="cal-dia {% if dia.pasado %}pasado{% else %}futuro{% if dia.hoy %} hoy{% endif %}{% endif %}"
+               id="dia-{{ dia.fecha|date:'Ymd' }}"
+               {% if not dia.pasado %}
+               data-fecha="{{ dia.fecha|date:'Y-m-d' }}"
+               onclick="abrirModalHorarios('{{ dia.fecha|date:'Y-m-d' }}', '{{ dia.fecha|date:'d/m/Y' }}')"
+               {% endif %}>
+            {{ dia.fecha.day }}
+            <span class="punto" id="punto-{{ dia.fecha|date:'Ymd' }}"></span>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Citas pendientes -->
+    <div class="seccion-cabecera">
+      <div class="seccion-titulo">Solicitudes pendientes ({{ citas_pendientes.count }})</div>
+    </div>
+    <!-- listado de citas -->
+
+    <div class="citas-grid">
+      {% for cita in citas_pendientes %}
+      <div class="cita-card">
+        <div class="cita-info">
+          <div class="cita-paciente">{{ cita.paciente.nombre_completo }}</div>
+          <div class="cita-fecha">
+            {{ cita.fecha|date:'d/m/Y' }} &mdash; {{ cita.hora_inicio_str }} a {{ cita.hora_fin_str }}
+          </div>
+          {% if cita.motivo %}
+          <div class="cita-motivo">"{{ cita.motivo }}"</div>
+          {% endif %}
+        </div>
+        <div class="cita-acciones">
+          <!-- Confirmar -->
+          <form method="POST" action="{% url 'actualizar_cita' cita.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="estado" value="confirmada">
+            <button type="submit" class="btn-sm btn-confirmar">Confirmar</button>
+          </form>
+          <!-- Cancelar (abre modal con motivo) -->
+          <button type="button" class="btn-sm btn-cancelar-cita"
+            onclick="abrirModalCancelar({{ cita.pk }}, '{{ cita.paciente.nombre_completo }}', '{{ cita.fecha|date:'d/m/Y' }}', '{{ cita.hora_inicio_str }}')">
+            Cancelar
+          </button>
+        </div>
+      </div>
+      {% empty %}
+      <div class="sin-citas">No hay solicitudes pendientes de confirmacion.</div>
+      {% endfor %}
+    </div>
+
+    <!-- Citas confirmadas proximas -->
+    <div class="seccion-cabecera">
+      <div class="seccion-titulo">Proximas citas confirmadas ({{ citas_confirmadas.count }})</div>
+    </div>
+    <div class="citas-grid">
+      {% for cita in citas_confirmadas %}
+      <div class="cita-card confirmada">
+        <div class="cita-info">
+          <div class="cita-paciente">{{ cita.paciente.nombre_completo }}</div>
+          <div class="cita-fecha">
+            {{ cita.fecha|date:'d/m/Y' }} &mdash; {{ cita.hora_inicio_str }} a {{ cita.hora_fin_str }}
+          </div>
+          {% if cita.motivo %}
+          <div class="cita-motivo">"{{ cita.motivo }}"</div>
+          {% endif %}
+        </div>
+        <div class="cita-acciones">
+          <form method="POST" action="{% url 'actualizar_cita' cita.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="estado" value="completada">
+            <button type="submit" class="btn-sm btn-completar">Completada</button>
+          </form>
+          <button type="button" class="btn-sm btn-cancelar-cita"
+            onclick="abrirModalCancelar({{ cita.pk }}, '{{ cita.paciente.nombre_completo }}', '{{ cita.fecha|date:'d/m/Y' }}', '{{ cita.hora_inicio_str }}')">
+            Cancelar
+          </button>
+        </div>
+      </div>
+      {% empty %}
+      <div class="sin-citas">No hay citas confirmadas proximas.</div>
+      {% endfor %}
+    </div>
+
+  </main>
+</div>
+
+<!-- ======== Modal de horarios disponibles ======== -->
+<div class="modal-overlay" id="modal-horarios">
+  <div class="modal">
+    <div class="modal-titulo" id="modal-horarios-titulo">Horarios disponibles</div>
+    <div class="msg-modal" id="msg-horarios"></div>
+
+    <div class="horarios-lista" id="lista-horarios">
+      <p style="text-align:center;color:var(--texto-medio);font-size:.85rem;padding:.5rem;">Cargando...</p>
+    </div>
+
+    <div class="agregar-hora">
+      <div>
+        <label>Hora inicio</label>
+        <input type="time" id="inp-inicio" value="08:00" step="1800">
+      </div>
+      <div>
+        <label>Hora fin</label>
+        <input type="time" id="inp-fin" value="09:00" step="1800">
+      </div>
+      <button class="btn-agregar-hora" onclick="agregarHorario()">Agregar</button>
+    </div>
+
+    <button class="btn-cerrar-modal" onclick="cerrarModalHorarios()">Cerrar</button>
+  </div>
+</div>
+
+<!-- ======== Modal cancelar cita (requiere motivo) ======== -->
+<div class="modal-overlay" id="modal-cancelar">
+  <div class="modal-cancel">
+    <div class="modal-titulo" id="cancel-titulo">Cancelar cita</div>
+    <div class="aviso" id="cancel-info"></div>
+    <div class="campo-motivo">
+      <label>Motivo de cancelacion</label>
+      <textarea id="cancel-motivo"
+        placeholder="Explica brevemente el motivo. El paciente recibira esta explicacion por correo electronico..."></textarea>
+      <div id="cancel-error" style="display:none;font-size:.78rem;color:var(--vino);margin-top:.4rem;"></div>
+    </div>
+    <div class="botones-cancel">
+      <button class="btn-confirmar-cancel" onclick="enviarCancelacion()">Confirmar cancelacion</button>
+      <button class="btn-no-cancel" onclick="cerrarModalCancelar()">Volver</button>
+    </div>
+    <!-- Formulario oculto que se envia al confirmar -->
+    <form id="form-cancelar" method="POST" style="display:none;">
+      {% csrf_token %}
+      <input type="hidden" name="estado" value="cancelada">
+      <input type="hidden" name="motivo_cancelacion" id="hidden-motivo">
+    </form>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Registrarse{% endblock %}
+{% block body_class %}pagina-publica{% endblock %}
+
+{% block contenido %}
+  <!-- navbar -->
+  <nav class="navegacion">
+    <a href="{% url 'inicio' %}" class="logo-nav">SanaMente<span>Col</span></a>
+    <ul class="enlaces-nav">
+      <li><a href="{% url 'login' %}">Iniciar sesion</a></li>
+      <li><a href="{% url 'registro' %}" class="activo">Registrarse</a></li>
+    </ul>
+  </nav>
+
+  <!-- registro card -->
+  <main class="contenedor-login">
+    <div class="tarjeta-login tarjeta-registro">
+      <!-- logo y título -->
+        <div class="marca-login">
+        <div class="circulo-logo">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+        </div>
+        <h1>Crear cuenta</h1>
+        <p>Registro de nuevo paciente</p>
+      </div>
+
+      <!-- separador -->
+
+      <div class="separador"></div>
+
+      <!-- formulario -->
+      <form method="POST" action="{% url 'registro' %}">
+        {% csrf_token %}
+
+        {% if formulario.non_field_errors %}
+        <div style="
+          background: rgba(107,30,46,.08); border-left: 3px solid var(--vino);
+          padding: .8rem 1rem; margin-bottom: 1.2rem;
+          font-size: .85rem; color: var(--vino); border-radius: 2px;
+        ">
+          {% for error in formulario.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- nombre y apellidos -->
+        <div class="fila-campos">
+          <div class="grupo-campo">
+            <label for="id_nombre">Nombres*</label>
+            <input type="text" id="id_nombre" name="nombre"
+              placeholder="Tu nombre"
+              value="{{ formulario.nombre.value|default:'' }}" required>
+            {% if formulario.nombre.errors %}
+            <small style="color:var(--vino);font-size:.78rem;">{{ formulario.nombre.errors.0 }}</small>
+            {% endif %}
+          </div>
+          <div class="grupo-campo">
+            <label for="id_apellidos">Apellidos*</label>
+            <input type="text" id="id_apellidos" name="apellidos"
+              placeholder="Tus apellidos"
+              value="{{ formulario.apellidos.value|default:'' }}" required>
+            {% if formulario.apellidos.errors %}
+            <small style="color:var(--vino);font-size:.78rem;">{{ formulario.apellidos.errors.0 }}</small>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- correo -->
+        <div class="grupo-campo">
+          <label for="id_correo">Correo electronico*</label>
+          <input type="email" id="id_correo" name="correo"
+            placeholder="tucorreo@ejemplo.com"
+            value="{{ formulario.correo.value|default:'' }}" required>
+          {% if formulario.correo.errors %}
+          <small style="color:var(--vino);font-size:.78rem;">{{ formulario.correo.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- username -->
+        <div class="grupo-campo">
+          <label for="id_username">Usuario*</label>
+          <input type="text" id="id_username" name="username"
+            placeholder="Ej: juan123 (sin espacios)"
+            value="{{ formulario.username.value|default:'' }}" required>
+          {% if formulario.username.errors %}
+          <small style="color:var(--vino);font-size:.78rem;">{{ formulario.username.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- celular -->
+        <div class="grupo-campo">
+          <label for="id_celular">Numero de celular*</label>
+          <input type="tel" id="id_celular" name="celular"
+            placeholder="Ej: 3001234567"
+            value="{{ formulario.celular.value|default:'' }}" required>
+        </div>
+
+        <!-- contraseña -->
+        <div class="grupo-campo">
+          <label for="id_contrasena">Contraseña*</label>
+          <div class="contenedor-contrasena">
+            <input type="password" id="id_contrasena" name="contrasena"
+              placeholder="Minimo 6 caracteres" required>
+            <button type="button" class="alternar-contrasena" id="btn-ver-pass" aria-label="Mostrar contrasena">
+              <svg id="ico-pass" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          {% if formulario.contrasena.errors %}
+          <small style="color:var(--vino);font-size:.78rem;">{{ formulario.contrasena.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- confirmar contraseña -->
+        <div class="grupo-campo">
+          <label for="id_confirmar">Confirmar contraseña*</label>
+          <div class="contenedor-contrasena">
+            <input type="password" id="id_confirmar" name="confirmar_contrasena"
+              placeholder="Repite tu contrasena" required>
+            <button type="button" class="alternar-contrasena" id="btn-ver-confirm" aria-label="Mostrar contraseña">
+              <svg id="ico-confirm" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="boton-enviar">Crear cuenta</button>
+      </form>
+
+      <p class="pie-login">Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesion aqui</a></p>
+    </div>
+  </main>
+
+  <!-- footer -->
+  <footer class="pie-pagina">
+    <div class="logo-pie">SanaMenteCol</div>
+    <span>&copy; 2026 &mdash; Todos los derechos reservados</span>
+    <a href="{% url 'inicio' %}">Volver al inicio</a>
+  </footer>
+{% endblock %}
+
