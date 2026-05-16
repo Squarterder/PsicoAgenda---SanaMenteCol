@@ -3,9 +3,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-psicoagenda-sanamentecol-2025-cambia-en-produccion'
+SECRET_KEY = 'django-insecure-psicoagenda-sanamentecol-2026-cambia-en-produccion'
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -21,6 +21,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +71,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -86,6 +88,6 @@ EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = 'AQUI_TU_CORREO@gmail.com'
-EMAIL_HOST_PASSWORD = 'AQUI_TU_CONTRASEÑA_DE_APLICACION'
-DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <AQUI_TU_CORREO@gmail.com>'
+EMAIL_HOST_USER     = 'squaarter@gmail.com'
+EMAIL_HOST_PASSWORD = 'mtmo kvmh etjq xfde'
+DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <squaarter@gmail.com>'

@@ -1,43 +1,14 @@
 # PsicoAgenda — SanaMenteCol
-
-Sistema web de gestión de citas para consultorio psicológico, desarrollado con Django. Permite que pacientes agenden citas con psicólogos, y que los psicólogos gestionen su disponibilidad y el seguimiento clínico de sus pacientes.
-
----
-
-## Tecnologías usadas
-
-| Capa          | Tecnología                                                            |
-|---------------|-----------------------------------------------------------------------|
-| Backend       | Python 3.x + Django 4.2                                               |
-| Base de datos | SQLite (incluida con Django, sin instalación extra)                   |
-| Frontend      | HTML5, CSS3 con variables personalizadas, JavaScript ES6+ (Fetch API) |
-| Autenticación | Sistema de usuarios propio extendiendo `AbstractUser` de Django       |
-| Correo        | SMTP de Gmail con contraseña de aplicación                            |
+Sistema de gestion de citas para consultorio psicologico desarrollado con Django.
 
 ---
 
-## Funcionalidades principales
+## Instalacion y ejecucion
 
-- **3 roles de usuario:** Administrador, Psicólogo, Paciente
-- Registro con username personalizado y validación en servidor
-- Calendario de disponibilidad por mes (psicólogo configura horarios individuales o semanales recurrentes)
-- Reserva de citas con confirmación por correo electrónico
-- Seguimiento clínico con ficha por paciente
-- Panel de administración para gestión de usuarios
+### Paso 1 — Abrir terminal en la carpeta del proyecto
+Descomprime el ZIP. Abre una terminal dentro de la carpeta `psicoagenda/`.
 
----
-
-## Instalación paso a paso
-
-### 1 — Clonar o descomprimir el proyecto
-
-```bash
-git clone https://github.com/Squarterder/PsicoAgenda---SanaMenteCol.git
-cd psicoagenda
-```
-
-### 2 — Crear entorno virtual
-
+### Paso 2 — Crear entorno virtual
 ```bash
 # Windows
 python -m venv venv
@@ -48,67 +19,127 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3 — Instalar dependencias
-
+### Paso 3 — Instalar Django
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4 — Configurar variables de entorno
-
-Copia el archivo de ejemplo y edítalo con tus datos:
-
-Abre `psicoagenda/settings.py` y reemplaza los valores:
-
-```
-SECRET_KEY=django-insecure-psicoagenda-sanamentecol-2026-cambia-en-produccion
-DEBUG=True
-EMAIL_HOST_USER=tucorreo@gmail.com
-EMAIL_HOST_PASSWORD=abcd efgh ijkl mnop
-```
-
-> **Nota:** El sistema funciona igual sin configurar el correo, simplemente no se enviarán notificaciones.
-
-### 5 — Crear la base de datos
-
+### Paso 4 — Crear la base de datos
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 6 — Crear los usuarios de prueba
-
+### Paso 5 — Crear los 3 usuarios iniciales
 ```bash
 python manage.py crear_datos_iniciales
 ```
 
-| Rol           | Usuario   | Contraseña |
-|---------------|-----------|------------|
-| Administrador | admin     | Admin2026  |
-| Psicóloga     | psicologa | Psi2026    |
-| Paciente      | paciente1 | Pac2026    |
+| Rol           | Usuario    | Contraseña |
+|---------------|------------|------------|
+| Administrador | admin      | Admin2026  |
+| Psicologa     | psicologa  | Psi2026    |
+| Paciente      | paciente1  | Pac2026    |
 
-### 7 — Iniciar el servidor
+### Paso 6 — Configurar el correo (leer seccion de abajo primero)
+Abre el archivo `psicoagenda/settings.py` y reemplaza las dos lineas:
+```python
+EMAIL_HOST_USER     = 'AQUI_TU_CORREO@gmail.com'
+EMAIL_HOST_PASSWORD = 'AQUI_TU_CONTRASEÑA_DE_APLICACION'
+DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <AQUI_TU_CORREO@gmail.com>'
+```
+por tus datos reales. El procedimiento para obtenerlos esta mas abajo.
 
+### Paso 7 — Iniciar el servidor
 ```bash
 python manage.py runserver
 ```
-
-Abrir en el navegador: **http://127.0.0.1:8000/**
+Abre el navegador en: http://127.0.0.1:8000/
 
 ---
 
-## Guía de conexión — Correo Gmail
+## Como obtener la contraseña de aplicacion de Gmail (paso a paso)
 
-El correo es opcional. Si no lo configuras, el sistema funciona normalmente en todo lo demás.
+Los correos del sistema (notificaciones de citas) se envian desde una cuenta de Gmail.
+Gmail no permite usar tu contraseña normal desde aplicaciones externas por seguridad.
+En su lugar debes generar una "contraseña de aplicacion", que es una clave especial
+de 16 caracteres que Google crea para que PsicoAgenda se conecte a tu cuenta.
 
-Para activar las notificaciones por correo necesitas una **contraseña de aplicación** de Gmail (no es tu contraseña normal):
+### Requisito previo: tener verificacion en dos pasos activada
 
-1. Ve a https://myaccount.google.com/security
-2. Activa la **Verificación en dos pasos** si no la tienes
-3. Busca **Contraseñas de aplicación** y crea una nueva llamada "PsicoAgenda"
-4. Copia los 16 caracteres que Google te muestra
-5. Pégalos en `EMAIL_HOST_PASSWORD` dentro de `settings.py`
+Google solo permite crear contraseñas de aplicacion si tienes activa la verificacion
+en dos pasos (el codigo que te llega al celular cuando inicias sesion).
+
+Si aun no la tienes:
+
+1. Ve a https://myaccount.google.com
+2. Haz clic en "Seguridad" en el menu de la izquierda.
+3. Busca la seccion "Como inicias sesion en Google".
+4. Haz clic en "Verificacion en dos pasos".
+5. Sigue los pasos para activarla (necesitas tu celular).
+
+### Paso 1 — Ir a la configuracion de seguridad de tu cuenta Google
+
+Ve a esta direccion directamente:
+https://myaccount.google.com/security
+
+### Paso 2 — Buscar "Contraseñas de aplicacion"
+
+En esa pagina, dentro de la seccion "Como inicias sesion en Google",
+busca la opcion llamada "Contraseñas de aplicacion".
+
+Si no aparece, significa que la verificacion en dos pasos no esta activa.
+Activala primero y luego vuelve a buscarla.
+
+### Paso 3 — Crear la contraseña de aplicacion
+
+1. Haz clic en "Contraseñas de aplicacion".
+2. Google te pedira confirmar tu identidad con tu contraseña normal.
+3. En la pantalla que aparece veras un campo que dice "Nombre de la app".
+4. Escribe cualquier nombre descriptivo, por ejemplo: PsicoAgenda
+5. Haz clic en "Crear".
+
+### Paso 4 — Copiar la contraseña generada
+
+Google te mostrara una contraseña de 16 caracteres separados en 4 grupos,
+por ejemplo: abcd efgh ijkl mnop
+
+Copia esa contraseña exactamente como aparece, incluyendo los espacios,
+o sin espacios, ambas formas funcionan.
+
+IMPORTANTE: esa contraseña solo se muestra una vez. Si la cierras sin copiarla
+tendras que generar una nueva.
+
+### Paso 5 — Pegar los datos en settings.py
+
+Abre el archivo `psicoagenda/settings.py` y edita estas tres lineas:
+
+```python
+EMAIL_HOST_USER     = 'tucorreo@gmail.com'
+EMAIL_HOST_PASSWORD = 'abcd efgh ijkl mnop'
+DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <tucorreo@gmail.com>'
+```
+
+Reemplaza `tucorreo@gmail.com` con tu correo real de Gmail.
+Reemplaza `abcd efgh ijkl mnop` con la contraseña de 16 caracteres que copiaste.
+
+Guarda el archivo.
+
+### Paso 6 — Probar que funciona
+
+Inicia el servidor y reserva una cita con el usuario paciente1.
+El psicologo deberia recibir un correo en la bandeja de entrada de la cuenta
+de Gmail que configuraste.
+
+Si el correo llega a la carpeta de spam, abrelo y marcalo como "No es spam"
+para que los siguientes lleguen al inbox.
+
+### Que pasa si no configuro el correo
+
+El sistema funciona normalmente en todos los demas aspectos.
+Simplemente los correos de notificacion no se enviaran y Django
+mostrara un error silencioso en segundo plano sin afectar la aplicacion.
+Las citas se pueden gestionar igual desde los paneles.
 
 ---
 
@@ -116,42 +147,60 @@ Para activar las notificaciones por correo necesitas una **contraseña de aplica
 
 ```
 psicoagenda/
-│
-├── manage.py
-├── requirements.txt
-├── db.sqlite3                        Base de datos (se genera con migrate)
-│
-├── psicoagenda/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-│
-├── citas/
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   ├── forms.py
-│   ├── admin.py
-│   └── management/commands/
-│       └── crear_datos_iniciales.py
-│
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   ├── login.html
-│   ├── registro.html
-│   ├── dashboard_admin.html
-│   ├── admin_crear_usuario.html
-│   ├── dashboard_psicologo.html
-│   ├── lista_pacientes.html
-│   ├── seguimiento_paciente.html
-│   └── dashboard_paciente.html
-│
-└── static/
-    ├── estilos.css
-    ├── aplicacion.js
-    ├── psicologa.jpg
-    └── consultorio.jpg
+|
+|-- manage.py                    Comando principal de Django
+|-- requirements.txt             Dependencias (solo Django)
+|-- db.sqlite3                   Base de datos (se crea con migrate)
+|
+|-- psicoagenda/
+|   |-- settings.py              Ajustes: BD, correo, rutas, idioma
+|   |-- urls.py                  URLs principales
+|   |-- wsgi.py                  Para despliegue en servidor
+|
+|-- citas/
+|   |-- models.py                Modelos: Usuario, HorarioDisponible, Cita, SeguimientoClinico
+|   |-- views.py                 Logica del sistema y envio de correos
+|   |-- urls.py                  Rutas de la aplicacion
+|   |-- forms.py                 Formularios y validaciones
+|   |-- admin.py                 Panel de administracion Django
+|   |-- management/
+|       |-- commands/
+|           |-- crear_datos_iniciales.py   Crea los 3 usuarios de prueba
+|   |-- migrations/              Migraciones de la BD
+|
+|-- templates/                   Paginas HTML
+|   |-- base.html
+|   |-- index.html               Pagina de inicio
+|   |-- login.html
+|   |-- registro.html
+|   |-- dashboard_admin.html     Panel del administrador
+|   |-- admin_crear_usuario.html Crear y editar usuarios
+|   |-- dashboard_psicologo.html Agenda del psicologo
+|   |-- lista_pacientes.html     Lista de pacientes del psicologo
+|   |-- seguimiento_paciente.html Ficha clinica individual
+|   |-- dashboard_paciente.html  Vista del paciente
+|
+|-- static/
+    |-- estilos.css
+    |-- aplicacion.js
+    |-- psicologa.jpg
+    |-- consultorio.jpg
 ```
 
 ---
+
+## Comandos utiles
+
+```bash
+# Crear migraciones tras cambiar models.py
+python manage.py makemigrations
+
+# Aplicar migraciones
+python manage.py migrate
+
+# Crear los 3 usuarios de prueba
+python manage.py crear_datos_iniciales
+
+# Iniciar el servidor
+python manage.py runserver
+```
