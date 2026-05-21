@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Utilidad de linea de comandos de Django para tareas administrativas."""
 import os
+import pymysql
+pymysql.install_as_MySQLdb()
 import sys
 
 

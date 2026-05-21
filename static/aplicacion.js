@@ -28,7 +28,7 @@ if (elementosAnimados.length > 0) {
 }
 
 
-// toggle contraseña — login
+// toggle contraseña — login (un solo campo)
 const campoLogin = document.getElementById('id_contrasena');
 const botonLogin = document.getElementById('alternar-contrasena');
 const iconoLogin = document.getElementById('icono-ojo');
@@ -58,7 +58,9 @@ document.getElementById('btn-ver-pass')?.addEventListener('click', () => toggleP
 document.getElementById('btn-ver-confirm')?.addEventListener('click', () => togglePass('id_confirmar', 'ico-confirm'));
 
 
+// ─────────────────────────────────────────────────────────────────
 // dashboard psicólogo
+// ─────────────────────────────────────────────────────────────────
 
 // modal de horarios
 let fechaActual = '';
@@ -223,9 +225,11 @@ if (document.getElementById('modal-horarios')) {
 }
 
 
+// ─────────────────────────────────────────────────────────────────
 // dashboard paciente
 // datos del servidor inyectados en el template como JSON island:
-// <script type="application/json" id="datos-paciente">...</script>
+//   <script type="application/json" id="datos-paciente">...</script>
+// ─────────────────────────────────────────────────────────────────
 
 const _datosPaciente = JSON.parse(document.getElementById('datos-paciente')?.textContent || '{}');
 const PSICOLOGO_ID   = _datosPaciente.psicologoId || '';
@@ -336,7 +340,9 @@ if (document.getElementById('modal-overlay')) {
 }
 
 
+// ─────────────────────────────────────────────────────────────────
 // modal horario semanal (psicólogo)
+// ─────────────────────────────────────────────────────────────────
 
 function abrirModalSemanal() {
   const msg = document.getElementById('msg-semanal');

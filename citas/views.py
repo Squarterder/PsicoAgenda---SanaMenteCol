@@ -22,6 +22,10 @@ from .forms import (
 from .models import Cita, HorarioDisponible, SeguimientoClinico, Usuario
 
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 def requiere_rol(*roles):
     def decorador(vista):
         @login_required
@@ -85,7 +89,9 @@ def construir_calendarios():
     return calendarios
 
 
+# ---------------------------------------------------------------------------
 # Correos electronicos
+# ---------------------------------------------------------------------------
 
 def enviar_correo_nueva_cita(cita):
     """Avisa al psicologo que un paciente reservo una cita."""
@@ -101,7 +107,8 @@ def enviar_correo_nueva_cita(cita):
     if cita.motivo:
         mensaje += f'  Motivo:  {cita.motivo}\n'
     mensaje += (
-        f'\nIngresa al sistema para confirmar o cancelar la cita\n\n'
+        f'\nIngresa al sistema para confirmar o cancelar la cita:\n'
+        f'http://127.0.0.1:8000/psicologo/\n\n'
         f'— PsicoAgenda / SanaMenteCol'
     )
     try:
@@ -125,7 +132,8 @@ def enviar_correo_cita_confirmada(cita):
         f'  Fecha:   {cita.fecha.strftime("%d/%m/%Y")}\n'
         f'  Horario: {cita.hora_inicio_str()} - {cita.hora_fin_str()}\n\n'
         f'Recuerda llegar unos minutos antes de tu cita. Si necesitas cancelar, '
-        f'hazlo con anticipacion desde el sistema\n\n'
+        f'hazlo con anticipacion desde el sistema:\n'
+        f'http://127.0.0.1:8000/paciente/\n\n'
         f'— PsicoAgenda / SanaMenteCol'
     )
     try:
@@ -150,7 +158,8 @@ def enviar_correo_cita_cancelada(cita, motivo_cancelacion):
         f'Motivo indicado por el psicologo:\n'
         f'  "{motivo_cancelacion}"\n\n'
         f'Puedes ingresar al sistema para reservar una nueva cita en otro '
-        f'horario disponible\n\n'
+        f'horario disponible:\n'
+        f'http://127.0.0.1:8000/paciente/\n\n'
         f'Disculpa los inconvenientes.\n\n'
         f'— PsicoAgenda / SanaMenteCol'
     )
@@ -165,13 +174,17 @@ def enviar_correo_cita_cancelada(cita, motivo_cancelacion):
         pass
 
 
+# ---------------------------------------------------------------------------
 # Pagina de inicio
+# ---------------------------------------------------------------------------
 
 def pagina_inicio(request):
     return render(request, 'index.html')
 
 
+# ---------------------------------------------------------------------------
 # Autenticacion
+# ---------------------------------------------------------------------------
 
 def vista_login(request):
     if request.user.is_authenticated:
@@ -218,7 +231,9 @@ def dashboard(request):
         return redirect('dashboard_paciente')
 
 
+# ---------------------------------------------------------------------------
 # Panel de Administrador
+# ---------------------------------------------------------------------------
 
 @requiere_rol('admin')
 def panel_admin(request):
@@ -241,6 +256,10 @@ def panel_admin(request):
         'total_admin': Usuario.objects.filter(rol='admin').count(),
         'total_psicologo': Usuario.objects.filter(rol='psicologo').count(),
         'total_paciente': Usuario.objects.filter(rol='paciente').count(),
+        'migas': [
+            {'label': 'Inicio', 'url': '/'},
+            {'label': 'Panel Admin', 'url': ''},
+        ],
     }
     return render(request, 'dashboard_admin.html', contexto)
 
@@ -257,7 +276,15 @@ def crear_usuario(request):
                 f'Usuario {usuario.nombre_completo()} creado. Nombre de usuario: {usuario.username}'
             )
             return redirect('panel_admin')
-    return render(request, 'admin_crear_usuario.html', {'formulario': formulario, 'accion': 'Crear'})
+    return render(request, 'admin_crear_usuario.html', {
+        'formulario': formulario,
+        'accion': 'Crear',
+        'migas': [
+            {'label': 'Inicio', 'url': '/'},
+            {'label': 'Panel Admin', 'url': '/admin-panel/'},
+            {'label': 'Crear Usuario', 'url': ''},
+        ],
+    })
 
 
 @requiere_rol('admin')
@@ -274,6 +301,11 @@ def editar_usuario(request, usuario_id):
         'formulario': formulario,
         'accion': 'Editar',
         'usuario_editado': usuario_obj,
+        'migas': [
+            {'label': 'Inicio', 'url': '/'},
+            {'label': 'Panel Admin', 'url': '/admin-panel/'},
+            {'label': f'Editar: {usuario_obj.nombre}', 'url': ''},
+        ],
     })
 
 
@@ -304,7 +336,9 @@ def toggle_usuario(request, usuario_id):
     return redirect('panel_admin')
 
 
+# ---------------------------------------------------------------------------
 # Dashboard Psicologo
+# ---------------------------------------------------------------------------
 
 @requiere_rol('psicologo')
 def dashboard_psicologo(request):
@@ -447,8 +481,8 @@ def guardar_horario_semanal(request):
 
     hora_inicio_str = datos.get('hora_inicio')
     hora_fin_str    = datos.get('hora_fin')
-    dias_semana     = datos.get('dias', [])
-    mes_str         = datos.get('mes')
+    dias_semana     = datos.get('dias', [])   # lista de ints 0-6 (lun-dom)
+    mes_str         = datos.get('mes')         # "actual" | "siguiente"
 
     if not hora_inicio_str or not hora_fin_str:
         return JsonResponse({'error': 'Horas requeridas'}, status=400)
@@ -483,6 +517,7 @@ def guardar_horario_semanal(request):
     omitidos  = 0
     dia_actual = primer_dia
     while dia_actual <= ultimo_dia:
+        # weekday(): 0=lunes … 6=domingo
         if dia_actual >= hoy and dia_actual.weekday() in dias_semana:
             _, fue_creado = HorarioDisponible.objects.get_or_create(
                 psicologo   = request.user,
@@ -552,7 +587,9 @@ def actualizar_cita(request, cita_id):
     return redirect('dashboard_psicologo')
 
 
+# ---------------------------------------------------------------------------
 # Seguimiento clinico (Psicologo)
+# ---------------------------------------------------------------------------
 
 @requiere_rol('psicologo')
 def lista_pacientes_psicologo(request):
@@ -598,6 +635,11 @@ def lista_pacientes_psicologo(request):
         'pacientes_data': pacientes_data,
         'busqueda': busqueda,
         'total': len(pacientes_data),
+        'migas': [
+            {'label': 'Inicio', 'url': '/'},
+            {'label': 'Mi Agenda', 'url': '/psicologo/'},
+            {'label': 'Mis Pacientes', 'url': ''},
+        ],
     }
     return render(request, 'lista_pacientes.html', contexto)
 
@@ -642,11 +684,19 @@ def seguimiento_paciente(request, paciente_id):
             'confirmadas': citas.filter(estado='confirmada').count(),
             'canceladas': citas.filter(estado='cancelada').count(),
         },
+        'migas': [
+            {'label': 'Inicio', 'url': '/'},
+            {'label': 'Mi Agenda', 'url': '/psicologo/'},
+            {'label': 'Mis Pacientes', 'url': '/psicologo/pacientes/'},
+            {'label': f'{paciente.nombre} {paciente.apellidos}', 'url': ''},
+        ],
     }
     return render(request, 'seguimiento_paciente.html', contexto)
 
 
+# ---------------------------------------------------------------------------
 # Dashboard Paciente
+# ---------------------------------------------------------------------------
 
 @requiere_rol('paciente')
 def dashboard_paciente(request):

@@ -555,7 +555,9 @@ body {
 .pie-login a { color: var(--vino); text-decoration: none; font-weight: 600; }
 .pie-login a:hover { text-decoration: underline; }
 
-/* REGISTRO */
+/* ══════════════════════════════
+   REGISTRO
+══════════════════════════════ */
 .tarjeta-registro {
   max-width: 520px;
 }
@@ -1286,3 +1288,21 @@ body.pagina-publica main { flex: 1; }
   border-radius: 2px; transition: border-color .2s, background .2s;
 }
 .btn-cerrar-semanal:hover { border-color: var(--vino); background: var(--beige-medio); }
+
+
+/* breadcrumbs */
+.breadcrumb {
+  display: flex; align-items: center; gap: .3rem;
+  margin-bottom: 1.4rem; flex-wrap: wrap;
+}
+.breadcrumb-item {
+  font-size: .78rem; color: var(--texto-medio);
+  text-decoration: none; letter-spacing: .03em;
+  transition: color .2s;
+}
+a.breadcrumb-item:hover { color: var(--vino); }
+.breadcrumb-actual {
+  font-size: .78rem; color: var(--vino);
+  font-weight: 600; letter-spacing: .03em;
+}
+.breadcrumb-sep { color: var(--beige-oscuro); display: flex; align-items: center; }

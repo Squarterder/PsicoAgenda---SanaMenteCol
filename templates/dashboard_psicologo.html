@@ -108,60 +108,6 @@
       </button>
     </div>
 
-    <!-- modal horario semanal -->
-    <div class="modal-overlay" id="modal-semanal">
-      <div class="modal-semanal">
-        <div class="modal-titulo">Horario semanal recurrente</div>
-        <div class="modal-subtitulo">Crea horarios para los días seleccionados en todo el mes de una vez.</div>
-
-        <div class="msg-modal msg-ok" id="msg-semanal"></div>
-
-        <!-- selección de mes -->
-        <div class="semanal-seccion">
-          <label class="lbl-campo">Mes</label>
-          <div class="mes-opciones">
-            <input class="mes-opcion" type="radio" name="mes-semanal" id="mes-actual" value="actual" checked>
-            <label class="mes-opcion-label" for="mes-actual">Mes actual</label>
-            <input class="mes-opcion" type="radio" name="mes-semanal" id="mes-siguiente" value="siguiente">
-            <label class="mes-opcion-label" for="mes-siguiente">Mes siguiente</label>
-          </div>
-        </div>
-
-        <!-- selección de días -->
-        <div class="semanal-seccion">
-          <label class="lbl-campo">Días de la semana</label>
-          <div class="dias-grid">
-            <input class="dia-check" type="checkbox" id="dia-0" value="0"><label class="dia-label" for="dia-0">Lun</label>
-            <input class="dia-check" type="checkbox" id="dia-1" value="1"><label class="dia-label" for="dia-1">Mar</label>
-            <input class="dia-check" type="checkbox" id="dia-2" value="2"><label class="dia-label" for="dia-2">Mié</label>
-            <input class="dia-check" type="checkbox" id="dia-3" value="3"><label class="dia-label" for="dia-3">Jue</label>
-            <input class="dia-check" type="checkbox" id="dia-4" value="4"><label class="dia-label" for="dia-4">Vie</label>
-            <input class="dia-check" type="checkbox" id="dia-5" value="5"><label class="dia-label" for="dia-5">Sáb</label>
-            <input class="dia-check" type="checkbox" id="dia-6" value="6"><label class="dia-label" for="dia-6">Dom</label>
-          </div>
-        </div>
-
-        <!-- horas -->
-        <div class="semanal-seccion">
-          <div class="horas-fila">
-            <div class="campo-hora">
-              <label class="lbl-campo" for="sem-inicio">Hora inicio</label>
-              <input type="time" id="sem-inicio" value="08:00">
-            </div>
-            <div class="campo-hora">
-              <label class="lbl-campo" for="sem-fin">Hora fin</label>
-              <input type="time" id="sem-fin" value="10:00">
-            </div>
-          </div>
-        </div>
-
-        <div class="botones-semanal">
-          <button class="btn-aplicar-semanal" onclick="aplicarHorarioSemanal()">Aplicar al mes</button>
-          <button class="btn-cerrar-semanal" onclick="cerrarModalSemanal()">Cancelar</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Calendarios de los 2 meses -->
     <!-- calendarios -->
 
@@ -316,5 +262,60 @@
     </form>
   </div>
 </div>
+
+<!-- modal horario semanal -->
+<div class="modal-overlay" id="modal-semanal">
+  <div class="modal-semanal">
+    <div class="modal-titulo">Horario semanal recurrente</div>
+    <div class="modal-subtitulo">Crea horarios para los días seleccionados en todo el mes de una vez.</div>
+
+    <div class="msg-modal" id="msg-semanal"></div>
+
+    <!-- selección de mes -->
+    <div class="semanal-seccion">
+      <label class="lbl-campo">Mes</label>
+      <div class="mes-opciones">
+        <input class="mes-opcion" type="radio" name="mes-semanal" id="mes-actual" value="actual" checked>
+        <label class="mes-opcion-label" for="mes-actual">Mes actual</label>
+        <input class="mes-opcion" type="radio" name="mes-semanal" id="mes-siguiente" value="siguiente">
+        <label class="mes-opcion-label" for="mes-siguiente">Mes siguiente</label>
+      </div>
+    </div>
+
+    <!-- selección de días -->
+    <div class="semanal-seccion">
+      <label class="lbl-campo">Días de la semana</label>
+      <div class="dias-grid">
+        <input class="dia-check" type="checkbox" id="dia-0" value="0"><label class="dia-label" for="dia-0">Lun</label>
+        <input class="dia-check" type="checkbox" id="dia-1" value="1"><label class="dia-label" for="dia-1">Mar</label>
+        <input class="dia-check" type="checkbox" id="dia-2" value="2"><label class="dia-label" for="dia-2">Mié</label>
+        <input class="dia-check" type="checkbox" id="dia-3" value="3"><label class="dia-label" for="dia-3">Jue</label>
+        <input class="dia-check" type="checkbox" id="dia-4" value="4"><label class="dia-label" for="dia-4">Vie</label>
+        <input class="dia-check" type="checkbox" id="dia-5" value="5"><label class="dia-label" for="dia-5">Sáb</label>
+        <input class="dia-check" type="checkbox" id="dia-6" value="6"><label class="dia-label" for="dia-6">Dom</label>
+      </div>
+    </div>
+
+    <!-- horas -->
+    <div class="semanal-seccion">
+      <div class="horas-fila">
+        <div class="campo-hora">
+          <label class="lbl-campo" for="sem-inicio">Hora inicio</label>
+          <input type="time" id="sem-inicio" value="08:00">
+        </div>
+        <div class="campo-hora">
+          <label class="lbl-campo" for="sem-fin">Hora fin</label>
+          <input type="time" id="sem-fin" value="10:00">
+        </div>
+      </div>
+    </div>
+
+    <div class="botones-semanal">
+      <button class="btn-aplicar-semanal" onclick="aplicarHorarioSemanal()">Aplicar al mes</button>
+      <button class="btn-cerrar-semanal" onclick="cerrarModalSemanal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 

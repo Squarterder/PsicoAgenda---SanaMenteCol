@@ -6,10 +6,10 @@ from .models import Cita, SeguimientoClinico, Usuario
 class FormularioLogin(forms.Form):
     usuario = forms.CharField(
         label='Usuario',
-        widget=forms.TextInput(attrs={'placeholder': 'Tu usuario', 'autocomplete': 'username'}),
+        widget=forms.TextInput(attrs={'placeholder': 'Tu nombre de usuario', 'autocomplete': 'username'}),
     )
     contrasena = forms.CharField(
-        label='Contraseña',
+        label='Contrasena',
         widget=forms.PasswordInput(attrs={'placeholder': '...', 'autocomplete': 'current-password'}),
     )
 
@@ -21,7 +21,7 @@ class FormularioLogin(forms.Form):
         if usuario_nombre and contrasena:
             usuario = authenticate(username=usuario_nombre, password=contrasena)
             if usuario is None:
-                raise forms.ValidationError('Usuario o contraseña incorrectos.')
+                raise forms.ValidationError('Usuario o contrasena incorrectos.')
             if not usuario.habilitado:
                 raise forms.ValidationError('Tu cuenta esta deshabilitada. Contacta al administrador.')
             datos['usuario_obj'] = usuario
@@ -30,25 +30,25 @@ class FormularioLogin(forms.Form):
 
 class FormularioRegistro(forms.ModelForm):
     username = forms.CharField(
-        label='Usuario*',
+        label='Nombre de usuario',
         max_length=150,
         widget=forms.TextInput(attrs={'placeholder': 'Ej: juan123 (sin espacios)'}),
     )
     contrasena = forms.CharField(
-        label='Contraseña*',
+        label='Contrasena',
         min_length=6,
         widget=forms.PasswordInput(attrs={'placeholder': 'Minimo 6 caracteres'}),
     )
     confirmar_contrasena = forms.CharField(
-        label='Confirmar contraseña*',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Repite tu contraseña'}),
+        label='Confirmar contrasena',
+        widget=forms.PasswordInput(attrs={'placeholder': 'Repite tu contrasena'}),
     )
 
     class Meta:
         model = Usuario
         fields = ['nombre', 'apellidos', 'correo', 'celular']
         widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder': 'Tus nombres'}),
+            'nombre': forms.TextInput(attrs={'placeholder': 'Tu nombre'}),
             'apellidos': forms.TextInput(attrs={'placeholder': 'Tus apellidos'}),
             'correo': forms.EmailInput(attrs={'placeholder': 'tucorreo@ejemplo.com'}),
             'celular': forms.TextInput(attrs={'placeholder': 'Ej: 3001234567'}),
@@ -57,9 +57,9 @@ class FormularioRegistro(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username', '').strip()
         if ' ' in username:
-            raise forms.ValidationError('El usuario no puede contener espacios.')
+            raise forms.ValidationError('El nombre de usuario no puede contener espacios.')
         if Usuario.objects.filter(username=username).exists():
-            raise forms.ValidationError('Ese usuario ya esta en uso. Elige otro.')
+            raise forms.ValidationError('Ese nombre de usuario ya esta en uso. Elige otro.')
         return username
 
     def clean_correo(self):
@@ -73,7 +73,7 @@ class FormularioRegistro(forms.ModelForm):
         c1 = datos.get('contrasena')
         c2 = datos.get('confirmar_contrasena')
         if c1 and c2 and c1 != c2:
-            raise forms.ValidationError('Las contraseñas no coinciden.')
+            raise forms.ValidationError('Las contrasenas no coinciden.')
         return datos
 
     def save(self, commit=True):
@@ -90,12 +90,12 @@ class FormularioRegistro(forms.ModelForm):
 
 class FormularioCrearUsuario(forms.ModelForm):
     username = forms.CharField(
-        label='Usuario',
+        label='Nombre de usuario',
         max_length=150,
         widget=forms.TextInput(attrs={'placeholder': 'Ej: juan123 (sin espacios)'}),
     )
     contrasena = forms.CharField(
-        label='Contraseña',
+        label='Contrasena',
         min_length=6,
         widget=forms.PasswordInput(attrs={'placeholder': 'Minimo 6 caracteres'}),
     )
@@ -113,9 +113,9 @@ class FormularioCrearUsuario(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username', '').strip()
         if ' ' in username:
-            raise forms.ValidationError('El usuario no puede contener espacios.')
+            raise forms.ValidationError('El nombre de usuario no puede contener espacios.')
         if Usuario.objects.filter(username=username).exists():
-            raise forms.ValidationError('Ese usuario ya esta en uso. Elige otro.')
+            raise forms.ValidationError('Ese nombre de usuario ya esta en uso. Elige otro.')
         return username
 
     def clean_correo(self):
@@ -137,7 +137,7 @@ class FormularioCrearUsuario(forms.ModelForm):
 
 class FormularioEditarUsuario(forms.ModelForm):
     contrasena_nueva = forms.CharField(
-        label='Nueva contraseña (dejar en blanco para no cambiar)',
+        label='Nueva contrasena (dejar en blanco para no cambiar)',
         required=False,
         min_length=6,
         widget=forms.PasswordInput(attrs={'placeholder': 'Dejar en blanco para no cambiar'}),

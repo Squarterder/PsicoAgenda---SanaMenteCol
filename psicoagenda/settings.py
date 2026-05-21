@@ -3,9 +3,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-psicoagenda-sanamentecol-2026-cambia-en-produccion')
+SECRET_KEY = 'django-insecure-psicoagenda-sanamentecol-2025-cambia-en-produccion'
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -21,7 +21,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,8 +51,16 @@ WSGI_APPLICATION = 'psicoagenda.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME':     os.environ.get('DB_NAME',     'psicoagenda'),
+        'USER':     os.environ.get('DB_USER',     'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST':     os.environ.get('DB_HOST',     '127.0.0.1'),
+        'PORT':     os.environ.get('DB_PORT',     '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
@@ -71,8 +78,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -80,14 +86,16 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
+# ---------------------------------------------------------------------------
 # Configuracion de correo electronico con Gmail
 # Rellena las dos lineas marcadas con tus datos reales.
-# Leer el README (seccion Correo) para el paso a paso de como obtenerlos.
+# Lee el README (seccion Correo) para el paso a paso de como obtenerlos.
+# ---------------------------------------------------------------------------
 
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = 'squaarter@gmail.com'
-EMAIL_HOST_PASSWORD = 'mtmo kvmh etjq xfde'
-DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <squaarter@gmail.com>'
+EMAIL_HOST_USER     = 'AQUI_TU_CORREO@gmail.com'
+EMAIL_HOST_PASSWORD = 'AQUI_TU_CONTRASENA_DE_APLICACION'
+DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <AQUI_TU_CORREO@gmail.com>'

@@ -33,6 +33,9 @@
 
   <!-- contenido principal -->
   <main class="main-content">
+    <!-- breadcrumb -->
+    {% include '_breadcrumb.html' with migas=migas %}
+
     <!-- encabezado de página -->
     <div class="page-header">
       <h1>{{ accion }} Usuario</h1>
@@ -60,38 +63,38 @@
 
         <div class="fila-campos">
           <div class="grupo-campo">
-            <label>Nombres*</label>
+            <label>Nombre</label>
             <input type="text" name="nombre" value="{{ formulario.nombre.value|default:'' }}" placeholder="Nombre" required>
             {% if formulario.nombre.errors %}<div class="error">{{ formulario.nombre.errors.0 }}</div>{% endif %}
           </div>
           <div class="grupo-campo">
-            <label>Apellidos*</label>
+            <label>Apellidos</label>
             <input type="text" name="apellidos" value="{{ formulario.apellidos.value|default:'' }}" placeholder="Apellidos" required>
             {% if formulario.apellidos.errors %}<div class="error">{{ formulario.apellidos.errors.0 }}</div>{% endif %}
           </div>
         </div>
 
         <div class="grupo-campo">
-          <label>Correo electronico*</label>
+          <label>Correo electronico</label>
           <input type="email" name="correo" value="{{ formulario.correo.value|default:'' }}" placeholder="correo@ejemplo.com" required>
           {% if formulario.correo.errors %}<div class="error">{{ formulario.correo.errors.0 }}</div>{% endif %}
         </div>
 
         <div class="grupo-campo">
-          <label>Celular*</label>
+          <label>Celular</label>
           <input type="tel" name="celular" value="{{ formulario.celular.value|default:'' }}" placeholder="Ej: 3001234567">
         </div>
 
         {% if accion == 'Crear' %}
         <div class="grupo-campo">
-          <label>Usuario*</label>
+          <label>Nombre de usuario</label>
           <input type="text" name="username" value="{{ formulario.username.value|default:'' }}" placeholder="Ej: juan123 (sin espacios)" required>
           {% if formulario.username.errors %}<div class="error">{{ formulario.username.errors.0 }}</div>{% endif %}
         </div>
         {% endif %}
 
         <div class="grupo-campo">
-          <label>Rol*</label>
+          <label>Rol</label>
           <select name="rol" required>
             {% for valor, etiqueta in formulario.fields.rol.choices %}
             <option value="{{ valor }}" {% if formulario.rol.value == valor %}selected{% endif %}>{{ etiqueta }}</option>
@@ -101,7 +104,7 @@
         </div>
 
         <div class="grupo-campo">
-          <label>{% if accion == 'Crear' %}Contraseña*{% else %}Nueva contraseña (dejar en blanco para no cambiar){% endif %}</label>
+          <label>{% if accion == 'Crear' %}Contrasena{% else %}Nueva contrasena (dejar en blanco para no cambiar){% endif %}</label>
           <input type="password" name="{% if accion == 'Crear' %}contrasena{% else %}contrasena_nueva{% endif %}"
             placeholder="{% if accion == 'Crear' %}Minimo 6 caracteres{% else %}Dejar en blanco para no cambiar{% endif %}"
             {% if accion == 'Crear' %}required{% endif %}>

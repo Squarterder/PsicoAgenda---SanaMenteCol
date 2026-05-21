@@ -1,0 +1,17 @@
+<!-- breadcrumb — include con: {% include '_breadcrumb.html' with migas=migas %} -->
+{% if migas %}
+<nav class="breadcrumb" aria-label="Navegacion de ruta">
+  {% for miga in migas %}
+    {% if not forloop.last %}
+      <a href="{{ miga.url }}" class="breadcrumb-item">{{ miga.label }}</a>
+      <span class="breadcrumb-sep">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </span>
+    {% else %}
+      <span class="breadcrumb-item breadcrumb-actual">{{ miga.label }}</span>
+    {% endif %}
+  {% endfor %}
+</nav>
+{% endif %}

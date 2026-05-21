@@ -8,12 +8,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('Creando usuarios iniciales...')
 
-        # Administrador
+        # --- Administrador ---
         if not Usuario.objects.filter(username='admin').exists():
             Usuario.objects.create_superuser(
                 username='admin',
                 email='admin@sanamente.com',
-                password='Admin2026',
+                password='Admin2024',
                 nombre='Administrador',
                 apellidos='Sistema',
                 correo='admin@sanamente.com',
@@ -21,11 +21,11 @@ class Command(BaseCommand):
                 rol='admin',
                 habilitado=True,
             )
-            self.stdout.write(self.style.SUCCESS('  Administrador creado: usuario=admin / contraseña=Admin2026'))
+            self.stdout.write(self.style.SUCCESS('  Administrador creado: usuario=admin / contrasena=Admin2024'))
         else:
             self.stdout.write('  Administrador ya existe.')
 
-        # Psicologa
+        # --- Psicologa ---
         if not Usuario.objects.filter(username='psicologa').exists():
             p = Usuario(
                 username='psicologa',
@@ -37,13 +37,13 @@ class Command(BaseCommand):
                 rol='psicologo',
                 habilitado=True,
             )
-            p.set_password('Psi2026')
+            p.set_password('Psi2024')
             p.save()
-            self.stdout.write(self.style.SUCCESS('  Psicologa creada: usuario=psicologa / contraseña=Psi2026'))
+            self.stdout.write(self.style.SUCCESS('  Psicologa creada: usuario=psicologa / contrasena=Psi2024'))
         else:
             self.stdout.write('  Psicologa ya existe.')
 
-        # Paciente
+        # --- Paciente ---
         if not Usuario.objects.filter(username='paciente1').exists():
             pac = Usuario(
                 username='paciente1',
@@ -55,9 +55,9 @@ class Command(BaseCommand):
                 rol='paciente',
                 habilitado=True,
             )
-            pac.set_password('Pac2026')
+            pac.set_password('Pac2024')
             pac.save()
-            self.stdout.write(self.style.SUCCESS('  Paciente creado: usuario=paciente1 / contraseña=Pac2026'))
+            self.stdout.write(self.style.SUCCESS('  Paciente creado: usuario=paciente1 / contrasena=Pac2024'))
         else:
             self.stdout.write('  Paciente ya existe.')
 
