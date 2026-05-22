@@ -51,7 +51,7 @@
         <!-- nombre y apellidos -->
         <div class="fila-campos">
           <div class="grupo-campo">
-            <label for="id_nombre">Nombre</label>
+            <label for="id_nombre">Nombres*</label>
             <input type="text" id="id_nombre" name="nombre"
               placeholder="Tu nombre"
               value="{{ formulario.nombre.value|default:'' }}" required>
@@ -60,7 +60,7 @@
             {% endif %}
           </div>
           <div class="grupo-campo">
-            <label for="id_apellidos">Apellidos</label>
+            <label for="id_apellidos">Apellidos*</label>
             <input type="text" id="id_apellidos" name="apellidos"
               placeholder="Tus apellidos"
               value="{{ formulario.apellidos.value|default:'' }}" required>
@@ -72,7 +72,7 @@
 
         <!-- correo -->
         <div class="grupo-campo">
-          <label for="id_correo">Correo electronico</label>
+          <label for="id_correo">Correo electronico*</label>
           <input type="email" id="id_correo" name="correo"
             placeholder="tucorreo@ejemplo.com"
             value="{{ formulario.correo.value|default:'' }}" required>
@@ -83,7 +83,7 @@
 
         <!-- username -->
         <div class="grupo-campo">
-          <label for="id_username">Nombre de usuario</label>
+          <label for="id_username">Usuario*</label>
           <input type="text" id="id_username" name="username"
             placeholder="Ej: juan123 (sin espacios)"
             value="{{ formulario.username.value|default:'' }}" required>
@@ -94,7 +94,7 @@
 
         <!-- celular -->
         <div class="grupo-campo">
-          <label for="id_celular">Numero de celular</label>
+          <label for="id_celular">Numero de celular*</label>
           <input type="tel" id="id_celular" name="celular"
             placeholder="Ej: 3001234567"
             value="{{ formulario.celular.value|default:'' }}" required>
@@ -102,7 +102,7 @@
 
         <!-- contraseña -->
         <div class="grupo-campo">
-          <label for="id_contrasena">Contrasena</label>
+          <label for="id_contrasena">Contraseña*</label>
           <div class="contenedor-contrasena">
             <input type="password" id="id_contrasena" name="contrasena"
               placeholder="Minimo 6 caracteres" required>
@@ -120,10 +120,10 @@
 
         <!-- confirmar contraseña -->
         <div class="grupo-campo">
-          <label for="id_confirmar">Confirmar contrasena</label>
+          <label for="id_confirmar">Confirmar contraseña*</label>
           <div class="contenedor-contrasena">
             <input type="password" id="id_confirmar" name="confirmar_contrasena"
-              placeholder="Repite tu contrasena" required>
+              placeholder="Repite tu contraseña" required>
             <button type="button" class="alternar-contrasena" id="btn-ver-confirm" aria-label="Mostrar contrasena">
               <svg id="ico-confirm" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -143,7 +143,7 @@
   <!-- footer -->
   <footer class="pie-pagina">
     <div class="logo-pie">SanaMenteCol</div>
-    <span>&copy; 2025 &mdash; Todos los derechos reservados</span>
+    <span>&copy; 2026 &mdash; Todos los derechos reservados</span>
     <a href="{% url 'inicio' %}">Volver al inicio</a>
   </footer>
 {% endblock %}

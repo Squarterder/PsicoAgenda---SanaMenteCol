@@ -13,7 +13,7 @@ class Command(BaseCommand):
             Usuario.objects.create_superuser(
                 username='admin',
                 email='admin@sanamente.com',
-                password='Admin2024',
+                password='Admin2026',
                 nombre='Administrador',
                 apellidos='Sistema',
                 correo='admin@sanamente.com',
@@ -21,7 +21,7 @@ class Command(BaseCommand):
                 rol='admin',
                 habilitado=True,
             )
-            self.stdout.write(self.style.SUCCESS('  Administrador creado: usuario=admin / contrasena=Admin2024'))
+            self.stdout.write(self.style.SUCCESS('  Administrador creado: usuario=admin / contrasena=Admin2026'))
         else:
             self.stdout.write('  Administrador ya existe.')
 
@@ -37,9 +37,9 @@ class Command(BaseCommand):
                 rol='psicologo',
                 habilitado=True,
             )
-            p.set_password('Psi2024')
+            p.set_password('Psi2026')
             p.save()
-            self.stdout.write(self.style.SUCCESS('  Psicologa creada: usuario=psicologa / contrasena=Psi2024'))
+            self.stdout.write(self.style.SUCCESS('  Psicologa creada: usuario=psicologa / contrasena=Psi2026'))
         else:
             self.stdout.write('  Psicologa ya existe.')
 
@@ -55,9 +55,9 @@ class Command(BaseCommand):
                 rol='paciente',
                 habilitado=True,
             )
-            pac.set_password('Pac2024')
+            pac.set_password('Pac2026')
             pac.save()
-            self.stdout.write(self.style.SUCCESS('  Paciente creado: usuario=paciente1 / contrasena=Pac2024'))
+            self.stdout.write(self.style.SUCCESS('  Paciente creado: usuario=paciente1 / contrasena=Pac2026'))
         else:
             self.stdout.write('  Paciente ya existe.')
 

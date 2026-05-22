@@ -21,10 +21,7 @@ from .forms import (
 )
 from .models import Cita, HorarioDisponible, SeguimientoClinico, Usuario
 
-
-# ---------------------------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------------------------
 
 def requiere_rol(*roles):
     def decorador(vista):
@@ -89,9 +86,7 @@ def construir_calendarios():
     return calendarios
 
 
-# ---------------------------------------------------------------------------
 # Correos electronicos
-# ---------------------------------------------------------------------------
 
 def enviar_correo_nueva_cita(cita):
     """Avisa al psicologo que un paciente reservo una cita."""
@@ -107,8 +102,7 @@ def enviar_correo_nueva_cita(cita):
     if cita.motivo:
         mensaje += f'  Motivo:  {cita.motivo}\n'
     mensaje += (
-        f'\nIngresa al sistema para confirmar o cancelar la cita:\n'
-        f'http://127.0.0.1:8000/psicologo/\n\n'
+        f'\nIngresa al sistema para confirmar o cancelar la cita\n'
         f'— PsicoAgenda / SanaMenteCol'
     )
     try:
@@ -132,8 +126,7 @@ def enviar_correo_cita_confirmada(cita):
         f'  Fecha:   {cita.fecha.strftime("%d/%m/%Y")}\n'
         f'  Horario: {cita.hora_inicio_str()} - {cita.hora_fin_str()}\n\n'
         f'Recuerda llegar unos minutos antes de tu cita. Si necesitas cancelar, '
-        f'hazlo con anticipacion desde el sistema:\n'
-        f'http://127.0.0.1:8000/paciente/\n\n'
+        f'hazlo con anticipacion desde el sistema\n'
         f'— PsicoAgenda / SanaMenteCol'
     )
     try:
@@ -158,8 +151,7 @@ def enviar_correo_cita_cancelada(cita, motivo_cancelacion):
         f'Motivo indicado por el psicologo:\n'
         f'  "{motivo_cancelacion}"\n\n'
         f'Puedes ingresar al sistema para reservar una nueva cita en otro '
-        f'horario disponible:\n'
-        f'http://127.0.0.1:8000/paciente/\n\n'
+        f'horario disponible\n'
         f'Disculpa los inconvenientes.\n\n'
         f'— PsicoAgenda / SanaMenteCol'
     )
@@ -174,17 +166,13 @@ def enviar_correo_cita_cancelada(cita, motivo_cancelacion):
         pass
 
 
-# ---------------------------------------------------------------------------
 # Pagina de inicio
-# ---------------------------------------------------------------------------
 
 def pagina_inicio(request):
     return render(request, 'index.html')
 
 
-# ---------------------------------------------------------------------------
 # Autenticacion
-# ---------------------------------------------------------------------------
 
 def vista_login(request):
     if request.user.is_authenticated:
@@ -231,9 +219,7 @@ def dashboard(request):
         return redirect('dashboard_paciente')
 
 
-# ---------------------------------------------------------------------------
 # Panel de Administrador
-# ---------------------------------------------------------------------------
 
 @requiere_rol('admin')
 def panel_admin(request):
@@ -256,10 +242,6 @@ def panel_admin(request):
         'total_admin': Usuario.objects.filter(rol='admin').count(),
         'total_psicologo': Usuario.objects.filter(rol='psicologo').count(),
         'total_paciente': Usuario.objects.filter(rol='paciente').count(),
-        'migas': [
-            {'label': 'Inicio', 'url': '/'},
-            {'label': 'Panel Admin', 'url': ''},
-        ],
     }
     return render(request, 'dashboard_admin.html', contexto)
 
@@ -279,11 +261,6 @@ def crear_usuario(request):
     return render(request, 'admin_crear_usuario.html', {
         'formulario': formulario,
         'accion': 'Crear',
-        'migas': [
-            {'label': 'Inicio', 'url': '/'},
-            {'label': 'Panel Admin', 'url': '/admin-panel/'},
-            {'label': 'Crear Usuario', 'url': ''},
-        ],
     })
 
 
@@ -301,11 +278,6 @@ def editar_usuario(request, usuario_id):
         'formulario': formulario,
         'accion': 'Editar',
         'usuario_editado': usuario_obj,
-        'migas': [
-            {'label': 'Inicio', 'url': '/'},
-            {'label': 'Panel Admin', 'url': '/admin-panel/'},
-            {'label': f'Editar: {usuario_obj.nombre}', 'url': ''},
-        ],
     })
 
 
@@ -336,9 +308,7 @@ def toggle_usuario(request, usuario_id):
     return redirect('panel_admin')
 
 
-# ---------------------------------------------------------------------------
 # Dashboard Psicologo
-# ---------------------------------------------------------------------------
 
 @requiere_rol('psicologo')
 def dashboard_psicologo(request):
@@ -587,9 +557,7 @@ def actualizar_cita(request, cita_id):
     return redirect('dashboard_psicologo')
 
 
-# ---------------------------------------------------------------------------
 # Seguimiento clinico (Psicologo)
-# ---------------------------------------------------------------------------
 
 @requiere_rol('psicologo')
 def lista_pacientes_psicologo(request):
@@ -635,11 +603,6 @@ def lista_pacientes_psicologo(request):
         'pacientes_data': pacientes_data,
         'busqueda': busqueda,
         'total': len(pacientes_data),
-        'migas': [
-            {'label': 'Inicio', 'url': '/'},
-            {'label': 'Mi Agenda', 'url': '/psicologo/'},
-            {'label': 'Mis Pacientes', 'url': ''},
-        ],
     }
     return render(request, 'lista_pacientes.html', contexto)
 
@@ -684,19 +647,11 @@ def seguimiento_paciente(request, paciente_id):
             'confirmadas': citas.filter(estado='confirmada').count(),
             'canceladas': citas.filter(estado='cancelada').count(),
         },
-        'migas': [
-            {'label': 'Inicio', 'url': '/'},
-            {'label': 'Mi Agenda', 'url': '/psicologo/'},
-            {'label': 'Mis Pacientes', 'url': '/psicologo/pacientes/'},
-            {'label': f'{paciente.nombre} {paciente.apellidos}', 'url': ''},
-        ],
     }
     return render(request, 'seguimiento_paciente.html', contexto)
 
 
-# ---------------------------------------------------------------------------
 # Dashboard Paciente
-# ---------------------------------------------------------------------------
 
 @requiere_rol('paciente')
 def dashboard_paciente(request):
