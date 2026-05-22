@@ -21,6 +21,15 @@ class Usuario(AbstractUser):
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
 
+    def save(self, *args, **kwargs):
+        if self.rol == 'admin':
+            self.is_staff = True
+            self.is_superuser = True
+        else:
+            self.is_staff = False
+            self.is_superuser = False
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.nombre} {self.apellidos} ({self.get_rol_display()})'
 
