@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', '7Qx_0Cw8RuguDzBv3ikh4_YcmN1NiF1Rv13wOYwcdHsP3DV_f3AabTgzEliIvG7zbzU')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-psicoagenda-sanamentecol-2026-cambia-en-produccion')
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
@@ -96,6 +96,6 @@ EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = 'squaarter@gmail.com'
-EMAIL_HOST_PASSWORD = 'mtmo kvmh etjq xfde'
-DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol <squaarter@gmail.com>'
+EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', 'tucorreo@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'abcd efgh ijkl mnop')
+DEFAULT_FROM_EMAIL  = 'PsicoAgenda SanaMenteCol'
